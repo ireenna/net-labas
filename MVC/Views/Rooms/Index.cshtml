@@ -1,0 +1,39 @@
+﻿@model IEnumerable<BLL.ModelsDTO.RoomDTO>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@Html.ActionLink("Search awailable", "SearchAwailable")
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PeopleQuantity)
+        </th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PeopleQuantity)
+            </td>
+
+        </tr>
+    }
+
+</table>

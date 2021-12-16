@@ -1,0 +1,15 @@
+C:\Users\Irina\source\repos\Hotel\BLL\bin\Debug\net5.0\BLL.deps.json
+C:\Users\Irina\source\repos\Hotel\BLL\bin\Debug\net5.0\BLL.dll
+C:\Users\Irina\source\repos\Hotel\BLL\bin\Debug\net5.0\ref\BLL.dll
+C:\Users\Irina\source\repos\Hotel\BLL\bin\Debug\net5.0\BLL.pdb
+C:\Users\Irina\source\repos\Hotel\BLL\bin\Debug\net5.0\DAL.dll
+C:\Users\Irina\source\repos\Hotel\BLL\bin\Debug\net5.0\DAL.pdb
+C:\Users\Irina\source\repos\Hotel\BLL\obj\Debug\net5.0\BLL.csproj.AssemblyReference.cache
+C:\Users\Irina\source\repos\Hotel\BLL\obj\Debug\net5.0\BLL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Irina\source\repos\Hotel\BLL\obj\Debug\net5.0\BLL.AssemblyInfoInputs.cache
+C:\Users\Irina\source\repos\Hotel\BLL\obj\Debug\net5.0\BLL.AssemblyInfo.cs
+C:\Users\Irina\source\repos\Hotel\BLL\obj\Debug\net5.0\BLL.csproj.CoreCompileInputs.cache
+C:\Users\Irina\source\repos\Hotel\BLL\obj\Debug\net5.0\BLL.csproj.CopyComplete
+C:\Users\Irina\source\repos\Hotel\BLL\obj\Debug\net5.0\BLL.dll
+C:\Users\Irina\source\repos\Hotel\BLL\obj\Debug\net5.0\ref\BLL.dll
+C:\Users\Irina\source\repos\Hotel\BLL\obj\Debug\net5.0\BLL.pdb
