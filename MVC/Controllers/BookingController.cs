@@ -58,7 +58,7 @@ namespace MVC.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(BookingDTO std)
+        public async Task<IActionResult> Create(CreateBookingDTO std)
         {
             ViewBag.SyncType = "Asynchronous";
             bool result = await service.Create(std);
@@ -66,6 +66,21 @@ namespace MVC.Controllers
             return RedirectToAction("Index");
 
         }
-        
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await service.Delete(id);
+            return RedirectToAction("Index");
+        }
+
+        //// POST: /Movies/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    Movie movie = db.Movies.Find(id);
+        //    db.Movies.Remove(movie);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
     }
 }

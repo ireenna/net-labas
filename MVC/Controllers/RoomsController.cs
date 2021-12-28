@@ -36,7 +36,7 @@ namespace MVC.Controllers
             return View(result);
         }
         [HttpPost]
-        public async Task<IActionResult> Index(List<RoomDTO> models)
+        public IActionResult Index(List<RoomDTO> models)
         {
             return View(models) ;
         }
@@ -46,10 +46,8 @@ namespace MVC.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> SearchAwailable(CheckInCheckOutView model)
+        public IActionResult SearchAwailable(CheckInCheckOutView model)
         {
-            ViewBag.SyncType = "Asynchronous";
-            
             return RedirectToAction("IndexAwailable", new { CheckIn = model.CheckIn, CheckOut=model.CheckOut});
         }
         [HttpGet]

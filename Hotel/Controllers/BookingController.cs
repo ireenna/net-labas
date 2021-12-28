@@ -1,11 +1,11 @@
-﻿using BLL.ModelsDTO;
-using BLL.Services;
-using BLL.Services.Interfaces;
-using HotelPL.Configurations;
-using HotelPL.Controllers.Interfaces;
+﻿using HotelPL.Controllers.Interfaces;
+using HotelPL.ModelsView;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,12 +13,13 @@ namespace HotelPL.Controllers
 {
     public class BookingController : IController
     {
-        public readonly IBookingService service;
+
+        private readonly HttpClient appClient = new HttpClient() { BaseAddress = new Uri("https://localhost:44352/api/") };
         public Dictionary<int, Func<Task>> controllers { get; set; }
+
 
         public BookingController()
         {
-            service = Configuration.GetService(typeof(IBookingService)) as IBookingService;
             controllers = new Dictionary<int, Func<Task>>()
             {
                 [1] = GetAll,
@@ -26,7 +27,6 @@ namespace HotelPL.Controllers
                 [3] = Add,
                 [4] = Update,
                 [5] = Delete,
-                //[6] = GetAwailable
 
             };
         }
@@ -42,23 +42,19 @@ namespace HotelPL.Controllers
         }
         public async Task GetAll()
         {
-            List<BookingDTO> result = await service.GetAll();
+            HttpResponseMessage response = await appClient.GetAsync("booking");
+            string strResponse = await response.Content.ReadAsStringAsync();
+            List<BookingView> result = JsonConvert.DeserializeObject<List<BookingView>>(strResponse);
             result.ForEach(x => Console.WriteLine($"{x.Id}. Room: {x.RoomId}. Client: {x.ClientId}. Cost: {x.Cost}. Period: {x.CheckIn} - {x.CheckOut}."));
         }
-        //public async Task GetAwailable()
-        //{
-        //    Console.WriteLine("CheckIn: ");
-        //    DateTime cin = Convert.ToDateTime(Console.ReadLine());
-        //    Console.WriteLine("CheckOut: ");
-        //    DateTime cout = Convert.ToDateTime(Console.ReadLine());
-        //    List<RoomDTO> result = await service.GetAvailable(cin,cout);
-        //    result.ForEach(x=>Console.WriteLine($"{x.Id}. {Enum.GetName(typeof(CategoryDTO), x.Category)}. People: {x.PeopleQuantity}"));
-        //}
-        public async Task<BookingDTO> ReturnById()
+        public async Task<BookingView> ReturnById()
         {
             Console.WriteLine("Please, write an id: ");
             int id = Convert.ToInt32(Console.ReadLine());
-            return await service.GetById(id);
+            HttpResponseMessage response = await appClient.GetAsync("booking/"+id);
+            string strResponse = await response.Content.ReadAsStringAsync();
+            BookingView result = JsonConvert.DeserializeObject<BookingView>(strResponse);
+            return result;
         }
         public async Task GetById()
         {
@@ -78,11 +74,13 @@ namespace HotelPL.Controllers
             DateTime cin = Convert.ToDateTime(Console.ReadLine());
             Console.WriteLine("CheckOut: ");
             DateTime cout = Convert.ToDateTime(Console.ReadLine());
-            BookingDTO client = new BookingDTO() { ClientId = clientId, RoomId = roomId, Cost = cost, CheckIn = cin, CheckOut=cout };
+            CreateBookingView client = new CreateBookingView() { ClientId = clientId, RoomId = roomId, Cost = cost, CheckIn = cin, CheckOut=cout };
             try
             {
-                var result = await service.Create(client);
-                if (result)
+                var jsonProj = JsonConvert.SerializeObject(client);
+                var data = new StringContent(jsonProj, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await appClient.PostAsync($"booking", data);
+                if (response.StatusCode == HttpStatusCode.Created)
                 {
                     Console.WriteLine($"The booking of the room {client.RoomId} by client {client.ClientId} was successfully created!");
                 }
@@ -101,16 +99,56 @@ namespace HotelPL.Controllers
         public async Task Update()
         {
             var client = await ReturnById();
+            Console.WriteLine("Choose what you want to change:" +
+               "\n 1. Category." +
+               "\n 2. Is awailable.");
+
+            int comand = Convert.ToInt32(Console.ReadLine());
+
+            switch (comand)
+            {
+                case 1:
+                    Console.WriteLine("ClientId: ");
+                    client.ClientId = Convert.ToInt32(Console.ReadLine());
+                    break;
+                case 2:
+                    Console.WriteLine("RoomId: ");
+                    client.RoomId = Convert.ToInt32(Console.ReadLine());
+                    break;
+                case 3:
+                    Console.WriteLine("Cost: ");
+                    client.Cost = Convert.ToDecimal(Console.ReadLine());
+                    break;
+                case 4:
+                    Console.WriteLine("CheckIn: ");
+                    client.CheckIn = Convert.ToDateTime(Console.ReadLine());
+                    break;
+                case 5:
+                    Console.WriteLine("CheckOut: ");
+                    client.CheckOut = Convert.ToDateTime(Console.ReadLine());
+                    break;
+                default:
+                    break;
+            }
+            var jsonProj = JsonConvert.SerializeObject(client);
+            var data = new StringContent(jsonProj, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await appClient.PutAsync($"booking", data);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                Console.WriteLine($"The booking {client.Id} was successfully updated!");
+            }
+            else
+            {
+                Console.WriteLine("There is an error. Please, try again.");
+            }
+
             Console.WriteLine("Sorry, not implemented");
-
-            
-
         }
         public async Task Delete()
         {
             var client = await ReturnById();
-            var result = await service.Delete(client.Id);
-            if (result)
+            HttpResponseMessage response = await appClient.DeleteAsync("booking" + client.Id);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
                 Console.WriteLine($"The booking {client.Id} was successfully deleted!");
             }

@@ -46,13 +46,13 @@ namespace WebAPI
             });
             Assembly.GetExecutingAssembly();
 
+            services.AddScoped<IValidator<BookingDTO>, BookingDTOValidator>();
             services.AddTransient<IUnitOfWork, UnitOfWork<HotelContext>>();
 
             services.AddScoped<IClientService, ClientsService>();
             services.AddScoped<IRoomService, RoomsService>();
             services.AddScoped<IBookingService, BookingService>();
 
-            services.AddTransient<IValidator<BookingDTO>, BookingDTOValidator>();
             services.AddDbContext<HotelContext>(options => options.UseSqlServer("Server=DESKTOP-RG3R0BI\\SQLEXPRESS;Database=NETlaba;Trusted_Connection=True;"));
             
             services.AddControllers();

@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
             return await service.GetById(id);
         }
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] BookingDTO client)
+        public async Task<ActionResult> Create([FromBody] CreateBookingDTO client)
         {
             try
             {
@@ -56,27 +56,35 @@ namespace WebAPI.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return StatusCode(400, e.Message);
             }
         }
-        [HttpPut]
-        public async Task<ActionResult> Update([FromBody] BookingDTO client)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update([FromBody] BookingDTO client, [FromRoute] int id)
         {
             try
             {
-                var result = await service.Update(client);
-                if (result)
+                if (client.Id == id)
                 {
-                    return Ok(client);
+                    var result = await service.Update(client);
+                    if (result)
+                    {
+                        return Ok(client);
+                    }
+                    else
+                    {
+                        throw new Exception("There is an error. Please, try again.");
+                    }
                 }
                 else
                 {
                     throw new Exception("There is an error. Please, try again.");
                 }
+
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return StatusCode(400, e.Message);
             }
 
         }
@@ -97,7 +105,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return StatusCode(400, e.Message);
             }
 
         }

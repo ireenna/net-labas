@@ -1618,6 +1618,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
+          "FluentValidation": "10.3.6",
           "Microsoft.EntityFrameworkCore": "5.0.7",
           "Microsoft.EntityFrameworkCore.SqlServer": "5.0.7"
         },
@@ -6046,6 +6047,7 @@
     "net5.0": [
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 8.1.1",
       "BLL >= 1.0.0",
+      "FluentValidation >= 10.3.6",
       "Swashbuckle.AspNetCore >= 5.6.3"
     ]
   },
@@ -6095,6 +6097,10 @@
           "AutoMapper.Extensions.Microsoft.DependencyInjection": {
             "target": "Package",
             "version": "[8.1.1, )"
+          },
+          "FluentValidation": {
+            "target": "Package",
+            "version": "[10.3.6, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

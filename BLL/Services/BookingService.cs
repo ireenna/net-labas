@@ -36,7 +36,7 @@ namespace BLL.Services
             return _mapper.Map<BookingInfo, BookingDTO>(result);
         }
         
-        public async Task<bool> Create(BookingDTO room)
+        public async Task<bool> Create(CreateBookingDTO room)
         {
             var result = await clientRepository.GetByID(room.ClientId);
             if (result is null)
@@ -55,19 +55,39 @@ namespace BLL.Services
             {
                 throw new Exception("The room is not awailable in this period");
             }
-            await repository.Insert(_mapper.Map<BookingDTO, BookingInfo>(room));
+            await repository.Insert(_mapper.Map<CreateBookingDTO, BookingInfo>(room));
             return true;
 
         }
         public async Task<bool> Update(BookingDTO room)
         {
-            var result = await clientRepository.GetByID(room.Id);
-            if (result is null)
+            try
             {
-                throw new KeyNotFoundException("No such booking");
+                //var result1 = (await repository.Get()).Where(x=>x.Id == room.Id).Count();
+                //if (result1 == 0)
+                //{
+                //    throw new KeyNotFoundException("No such booking");
+                //}
+                var result = await clientRepository.GetByID(room.ClientId);
+                if (result is null)
+                {
+                    throw new KeyNotFoundException("No such client");
+
+                }
+                var roomresult = await roomRepository.GetByID(room.RoomId);
+                if (roomresult is null)
+                {
+                    throw new KeyNotFoundException("No such room");
+                }
+                await repository.Update(_mapper.Map<BookingDTO, BookingInfo>(room));
+                return true;
             }
-            await repository.Update(_mapper.Map<BookingDTO, BookingInfo>(room));
-            return true;
+            catch (Exception e)
+            {
+                throw new Exception("Wrong data");
+            }
+            
+            
         }
         public async Task<bool> Delete(int id)
         {

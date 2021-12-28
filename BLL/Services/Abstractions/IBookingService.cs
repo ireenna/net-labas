@@ -11,7 +11,7 @@ namespace BLL.Services.Interfaces
     {
         Task<List<BookingDTO>> GetAll();
         Task<BookingDTO> GetById(int id);
-        Task<bool> Create(BookingDTO room);
+        Task<bool> Create(CreateBookingDTO room);
         Task<bool> Update(BookingDTO room);
         Task<bool> Delete(int id);
     }

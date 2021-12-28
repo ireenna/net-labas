@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "6sTESUGmdKJ43BEieL+fi44cEnIrU6xq+GS1gGBwYi93mT5EGg6xf7rw9GcX4pOvfyejA9KF4/LlvEkzbiQ9aA==",
+  "dgSpecHash": "LmpVNzjUofoSL30fvBinDfAIoc/Z21AHc3w0C7u6jCnh85xi1scpudGsGFCrth207WVDep1UY3eTxz8YRu/gvA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Irina\\source\\repos\\Hotel\\DAL\\DAL.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Irina\\.nuget\\packages\\fluentvalidation\\10.3.6\\fluentvalidation.10.3.6.nupkg.sha512",
     "C:\\Users\\Irina\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Irina\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\Irina\\.nuget\\packages\\microsoft.data.sqlclient\\2.0.1\\microsoft.data.sqlclient.2.0.1.nupkg.sha512",

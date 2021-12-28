@@ -1,11 +1,11 @@
-﻿using BLL.ModelsDTO;
-using BLL.Services;
-using BLL.Services.Interfaces;
-using HotelPL.Configurations;
-using HotelPL.Controllers.Interfaces;
+﻿using HotelPL.Controllers.Interfaces;
+using HotelPL.ModelsView;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,19 +13,19 @@ namespace HotelPL.Controllers
 {
     public class RoomController : IController
     {
-        public readonly IRoomService service;
+        private readonly HttpClient appClient = new HttpClient() { BaseAddress = new Uri("https://localhost:44352/api/") };
         public Dictionary<int, Func<Task>> controllers { get; set; }
 
         public RoomController()
         {
-            service = Configuration.GetService(typeof(IRoomService)) as IRoomService;
             controllers = new Dictionary<int, Func<Task>>()
             {
                 [1] = GetAll,
                 [2] = GetById,
                 [3] = Add,
-                [4] = Update,
-                [5] = Delete
+                [4] = GetAwailable,
+                [5] = Update,
+                [6] = Delete
             };
         }
         public void ShowMenu()
@@ -34,36 +34,54 @@ namespace HotelPL.Controllers
                 "\n1 - get the list of all rooms" +
                 "\n2 - get the room by number" +
                 "\n3 - add room" +
-                "\n4 - update room" +
-                "\n5 - delete room");
+                "\n4 - get awailable" +
+                "\n5 - update room" +
+                "\n6 - delete room");
         }
         public async Task GetAll()
         {
-            List<RoomDTO> result = await service.GetAll();
-            result.ForEach(x => Console.WriteLine($"{x.Id}. {Enum.GetName(typeof(CategoryDTO), x.Category)} Is awailable now: {x.IsAvailable}."));
+            HttpResponseMessage response = await appClient.GetAsync("room");
+            string strResponse = await response.Content.ReadAsStringAsync();
+            List<RoomView> result = JsonConvert.DeserializeObject<List<RoomView>>(strResponse);
+            result.ForEach(x => Console.WriteLine($"{x.Id}. {Enum.GetName(typeof(CategoryView), x.Category)} Is awailable now: {x.IsAvailable}."));
         }
-        public async Task<RoomDTO> ReturnById()
+        public async Task<RoomView> ReturnById()
         {
             Console.WriteLine("Please, write an id: ");
             int id = Convert.ToInt32(Console.ReadLine());
-            return await service.GetById(id);
+            HttpResponseMessage response = await appClient.GetAsync("room/"+id);
+            string strResponse = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<RoomView>(strResponse);
         }
         public async Task GetById()
         {
             var x = await ReturnById();
-            Console.WriteLine($"{x.Id}. {Enum.GetName(typeof(CategoryDTO), x.Category)} Is awailable now: {x.IsAvailable}.");
+            Console.WriteLine($"{x.Id}. {Enum.GetName(typeof(CategoryView), x.Category)} Is awailable now: {x.IsAvailable}.");
 
+        }
+        public async Task GetAwailable()
+        {
+            Console.WriteLine("CheckIn: ");
+            DateTime cin = Convert.ToDateTime(Console.ReadLine());
+            Console.WriteLine("CheckOut: ");
+            DateTime cout = Convert.ToDateTime(Console.ReadLine());
+            HttpResponseMessage response = await appClient.GetAsync("room/awailable?checkIn="+cin.ToString()+"&checkOut="+cout.ToString());
+            string strResponse = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<List<RoomView>>(strResponse);
+
+            result.ForEach(x => Console.WriteLine($"{x.Id}. {Enum.GetName(typeof(CategoryView), x.Category)}. People: {x.PeopleQuantity}"));
         }
         public async Task Add()
         {
             Console.WriteLine("Category (1-Standart, 2-Prmium, 3-VIP): ");
             int category = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("IsAwailable (0-No, 1-Yes): ");
-            bool isaw = Convert.ToBoolean(Console.ReadLine());
-            RoomDTO client = new RoomDTO() { Category = (CategoryDTO)category, IsAvailable = isaw };
-
-            var result = await service.Create(client);
-            if (result)
+            bool isaw = Convert.ToBoolean(Convert.ToInt32(Console.ReadLine()));
+            RoomView client = new RoomView() { Category = (CategoryView)category, IsAvailable = isaw };
+            var jsonProj = JsonConvert.SerializeObject(client);
+            var data = new StringContent(jsonProj, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await appClient.PostAsync($"room", data);
+            if (response.StatusCode == HttpStatusCode.Created)
             {
                 Console.WriteLine($"The room was successfully created!");
             }
@@ -87,19 +105,20 @@ namespace HotelPL.Controllers
                 case 1:
                     {
                         Console.WriteLine("New category (1-Standart, 2-Prmium, 3-VIP):: ");
-                        client.Category = (CategoryDTO)Convert.ToInt32(Console.ReadLine());
+                        client.Category = (CategoryView)Convert.ToInt32(Console.ReadLine());
                         break;
                     }
                 case 2:
                     {
                         Console.WriteLine("Is awailable (0-No, 1-Yes): ");
-                        client.IsAvailable = Convert.ToBoolean(Console.ReadLine());
+                        client.IsAvailable = Convert.ToBoolean(Convert.ToInt32(Console.ReadLine()));
                         break;
                     }
             }
-
-            var result = await service.Update(client);
-            if (result)
+            var jsonProj = JsonConvert.SerializeObject(client);
+            var data = new StringContent(jsonProj, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await appClient.PutAsync($"room", data);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
                 Console.WriteLine($"The room {client.Id} was successfully updated!");
             }
@@ -112,8 +131,8 @@ namespace HotelPL.Controllers
         public async Task Delete()
         {
             var client = await ReturnById();
-            var result = await service.Delete(client.Id);
-            if (result)
+            HttpResponseMessage response = await appClient.DeleteAsync("room/" + client.Id);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
                 Console.WriteLine($"The room {client.Id} was successfully deleted!");
             }

@@ -34,6 +34,7 @@
       "MVC/1.0.0": {
         "dependencies": {
           "BLL": "1.0.0",
+          "FluentValidation": "10.3.6",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "5.0.2",
           "Microsoft.AspNetCore.Antiforgery": "5.0.0.0",
           "Microsoft.AspNetCore.Authentication.Abstractions": "5.0.0.0",
@@ -2168,6 +2169,7 @@
       },
       "DAL/1.0.0": {
         "dependencies": {
+          "FluentValidation": "10.3.6",
           "Microsoft.EntityFrameworkCore": "5.0.7",
           "Microsoft.EntityFrameworkCore.SqlServer": "5.0.7"
         },

@@ -59,20 +59,29 @@ namespace WebAPI.Controllers
                 return BadRequest(e);
             }
         }
-        [HttpPut]
-        public async Task<ActionResult> Update([FromBody] RoomDTO client)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update([FromBody] RoomDTO client, [FromRoute] int id)
         {
             try
             {
-                var result = await service.Update(client);
-                if (result)
+                if(client.Id == id)
                 {
-                    return Ok(client);
+                    var result = await service.Update(client);
+                    if (result)
+                    {
+                        return Ok(client);
+                    }
+                    else
+                    {
+                        throw new Exception("There is an error. Please, try again.");
+                    }
                 }
                 else
                 {
                     throw new Exception("There is an error. Please, try again.");
+
                 }
+
             }
             catch (Exception e)
             {

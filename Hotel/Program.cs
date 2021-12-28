@@ -12,20 +12,27 @@ namespace Hotel
             IMainController controller = new MainController();
             while (true)
             {
-                Console.Clear();
-                int key;
-                controller.ShowMenu();
-                if (int.TryParse(Console.ReadLine(), out key) && controller.controllers.ContainsKey(key))
+                try
                 {
-                    IController entiController = controller.controllers[key].Invoke();
-                    entiController.ShowMenu();
-                    if (int.TryParse(Console.ReadLine(), out key) && entiController.controllers.ContainsKey(key))
+                    Console.Clear();
+                    int key;
+                    controller.ShowMenu();
+                    if (int.TryParse(Console.ReadLine(), out key) && controller.controllers.ContainsKey(key))
                     {
-                        await entiController.controllers[key].Invoke();
-                        Console.ReadKey();
+                        IController entiController = controller.controllers[key].Invoke();
+                        entiController.ShowMenu();
+                        if (int.TryParse(Console.ReadLine(), out key) && entiController.controllers.ContainsKey(key))
+                        {
+                            await entiController.controllers[key].Invoke();
+                            Console.ReadKey();
+                        }
                     }
                 }
-                
+                catch
+                {
+                    Console.WriteLine("Something is wrong. Try again.");
+                    Console.ReadKey();
+                }
             }
         }
     }

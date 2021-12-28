@@ -15,6 +15,8 @@ namespace BLL.MappingProfiles
         {
             CreateMap<BookingDTO, BookingInfo>();
             CreateMap<BookingInfo, BookingDTO>();
+            CreateMap<CreateBookingDTO, BookingDTO>();
+            CreateMap<CreateBookingDTO, BookingInfo>();
         }
     }
 }

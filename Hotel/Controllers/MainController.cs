@@ -16,7 +16,7 @@ namespace HotelPL.Controllers
             controllers = new Dictionary<int, Func<IController>>()
             {
                 [1] = () => { return new RoomController(); },
-                [2] = () => { return new ClientController(); },
+                //[2] = () => { return new ClientController(); },
                 [3] = () => { return new BookingController(); }
             };
         }
